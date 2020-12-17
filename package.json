@@ -34,7 +34,8 @@
     "mongoose": "^5.10.11",
     "morgan": "^1.10.0",
     "multer": "^1.4.2",
-    "nodemon": "^2.0.6"
+    "nodemon": "^2.0.6",
+    "path": "^0.12.7"
   },
   "devDependencies": {
     "babel-plugin-react-html-attrs": "^3.0.5",

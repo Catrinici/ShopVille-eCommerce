@@ -13,6 +13,7 @@ import { PRODUCT_CREATE_RESET } from '../constants/productConstants'
 
 const ProductListScreen = ({ history, match }) => {
   const dispatch = useDispatch()
+  const pageNumber = match.params.pageNumber || 1
 
   const productList = useSelector((state) => state.productList)
   const { loading, error, products } = productList
@@ -37,13 +38,15 @@ const ProductListScreen = ({ history, match }) => {
 
   useEffect(() => {
     dispatch({ type: PRODUCT_CREATE_RESET })
-    if (!userInfo.isAdmin) {
+
+    if (!userInfo || !userInfo.isAdmin) {
       history.push('/login')
     }
+
     if (successCreate) {
-      history.push(`/admin/product/${createProduct._id}/edit`)
+      history.push(`/admin/product/${createdProduct._id}/edit`)
     } else {
-      dispatch(listProducts())
+      dispatch(listProducts('', pageNumber))
     }
   }, [
     dispatch,
@@ -52,6 +55,7 @@ const ProductListScreen = ({ history, match }) => {
     successDelete,
     successCreate,
     createdProduct,
+    pageNumber,
   ])
 
   const deleteHandler = (id) => {
