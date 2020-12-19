@@ -31,11 +31,27 @@ const ProductScreen = ({ history, match }) => {
   } = productReviewCreate
 
   useEffect(() => {
+    if (successProductReview) {
+      alert('Review Submitted!')
+      setRating(0)
+      setComment('')
+      dispatch({ type: PRODUCT_CREATE_REVIEW_RESET })
+    }
     dispatch(listProductDetails(match.params.id))
-  }, [dispatch, match])
+  }, [dispatch, match, successProductReview])
 
   const addToCartHandler = () => {
     history.push(`/cart/${match.params.id}?qty=${qty}`)
+  }
+
+  const submitHandler = (e) => {
+    e.preventDefault()
+    dispatch(
+      createProductReview(match.params.id, {
+        rating,
+        comment,
+      })
+    )
   }
 
   return (
@@ -143,9 +159,12 @@ const ProductScreen = ({ history, match }) => {
                 ))}
                 <ListGroup.Item>
                   <h2>Write a costumer review</h2>
+                  {errorProductReview && (
+                    <Message variant='danger'>{errorProductReview}</Message>
+                  )}
                   {userInfo ? (
                     <Form onSubmit={submitHandler}>
-                      <FormGroup constrolId='rating'>
+                      <Form.Group constrolId='rating'>
                         <Form.Label>Rating</Form.Label>
                         <Form.Control
                           as='select'
@@ -159,7 +178,19 @@ const ProductScreen = ({ history, match }) => {
                           <option value='4'>4 - Very Good</option>
                           <option value='5'>1 - Excellent</option>
                         </Form.Control>
-                      </FormGroup>
+                      </Form.Group>
+                      <Form.Group controlId='comment'>
+                        <Form.Label>Comment</Form.Label>
+                        <Form.Control
+                          as='textarea'
+                          row='3'
+                          value={comment}
+                          onChange={(e) => setComment(e.target.value)}
+                        ></Form.Control>
+                      </Form.Group>
+                      <Button type='submit' variant='primary'>
+                        Submit
+                      </Button>
                     </Form>
                   ) : (
                     <Message>
